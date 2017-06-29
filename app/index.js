@@ -9,6 +9,7 @@ import NewFleet from './components/Fleet/New.js';
 import FleetHome from './components/Fleet/FleetHome.js';
 import NewVehicle from './components/Fleet/Vehicle/New.js';
 import Settings from './components/User/Settings.js';
+import ChangePassword from './components/Auth/ChangePassword.js';
 
 export default () => {
   Navigation.registerComponent('Login', () => Login);
@@ -17,7 +18,8 @@ export default () => {
   Navigation.registerComponent('NewVehicle', () => NewVehicle);
   Navigation.registerComponent('FleetHome', () => FleetHome);
   Navigation.registerComponent('Settings', () => Settings);
-  //Navigation.registerComponent('Signout', () => Signout);
+  Navigation.registerComponent('Signout', () => Signout);
+  Navigation.registerComponent('ChangePassword', () => ChangePassword);
 
   Navigation.startTabBasedApp({
       tabs: [

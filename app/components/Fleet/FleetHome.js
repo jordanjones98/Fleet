@@ -72,7 +72,6 @@ export default class FleetHome extends Component {
 
         snapshotResponse = childSnapshot.val();
         
-
       });
     });
 

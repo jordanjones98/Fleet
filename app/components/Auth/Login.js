@@ -42,9 +42,9 @@ export default class Login extends Component {
   }
 
   handleSuccessfulLogin() {
-  this.props.navigator.switchToTab({
-    tabIndex: 0 // (optional) if missing, this screen's tab will become selected
-  });
+    this.props.navigator.switchToTab({
+      tabIndex: 0 // (optional) if missing, this screen's tab will become selected
+    });
     console.log('Success!!');
   }
 
