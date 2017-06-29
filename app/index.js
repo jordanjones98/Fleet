@@ -5,10 +5,10 @@ import firebase from './components/Firebase/Firebase.js';
 import Login from './components/Auth/Login.js';
 import Signup from './components/Auth/SignUp.js';
 import Signout from './components/Auth/SignOut.js';
-
 import NewFleet from './components/Fleet/New.js';
 import FleetHome from './components/Fleet/FleetHome.js';
 import NewVehicle from './components/Fleet/Vehicle/New.js';
+import Settings from './components/User/Settings.js';
 
 export default () => {
   Navigation.registerComponent('Login', () => Login);
@@ -16,6 +16,7 @@ export default () => {
   Navigation.registerComponent('NewFleet', () => NewFleet);
   Navigation.registerComponent('NewVehicle', () => NewVehicle);
   Navigation.registerComponent('FleetHome', () => FleetHome);
+  Navigation.registerComponent('Settings', () => Settings);
   //Navigation.registerComponent('Signout', () => Signout);
 
   Navigation.startTabBasedApp({
@@ -36,9 +37,9 @@ export default () => {
         title: 'New Vehicle',
       },
       {
-        label: 'Login',
-        screen: 'Login',
-        title: 'Login',
+        label: 'Settings',
+        screen: 'Settings',
+        title: 'Settings',
       }
       ],
       // passProps: { resolvedFirebase }
