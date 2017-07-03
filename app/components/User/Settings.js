@@ -18,7 +18,6 @@ export default class Settings extends Component {
     // Bind funcitons
     this.getUserInfo = this.getUserInfo.bind(this);
     this.getUserId = this.getUserId.bind(this);
-    this.setUserState = this.setUserState.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.logout = this.logout.bind(this);
 
@@ -66,18 +65,16 @@ export default class Settings extends Component {
   async getUserInfo() {
     console.log('getUserInfo' + this.state.userId);
     var userRef = firebase.database().ref('users/' + this.state.userId);
-    await userRef.on('value', function(snapshot) {
-      this.setUserState(snapshot.val().firstName, snapshot.val().lastName);
+    await userRef.on('value', (snapshot) => {
+        if(snapshot.val().firstName !== null && snapshot.val().lastName !== null) {
+          this.setState({
+            firstName: snapshot.val().firstName,
+            lastName: snapshot.val().lastName,
+            loadingMessage: ''
+          });
+        }
       console.log(snapshot.val.firstName);
-    }.bind(this));
-  }
-
-  setUserState(firstName, lastName) {
-    this.setState({
-      firstName: firstName,
-      lastName: lastName,
-      loadingMessage: ''
-    })
+    });
   }
 
   logout() {

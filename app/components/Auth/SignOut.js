@@ -15,7 +15,7 @@ export default class SignOut extends Component {
 
 
   signOut(props) {
-    firebase.auth().signOut().then(function() {
+    firebase.auth().signOut().then(() => {
       console.log('User Signed Out');
 
       this.resetPage();

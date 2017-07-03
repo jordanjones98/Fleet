@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, TextInput, Button, Navigator } from 'react-native';
-//import firebase from '../Firebase/Firebase.js'
+import firebase from '../../Firebase/Firebase.js'
 
 export default class New extends Component {
 
   constructor(props) {
     super(props);
-    this.firebase = this.props.firebase;
     this.state = {
       fleetId: '16970',
       vehicleId: '2',
@@ -20,9 +19,9 @@ export default class New extends Component {
 
   async tryToWriteVehicle() {
     console.log(this.state.fleetName);
-    var user = this.firebase.auth().currentUser;
+    var user = firebase.auth().currentUser;
     try {
-      var insert = await this.firebase.database().ref('fleet/' + this.state.fleetId + '/vehicle/' + this.state.vehicleId).set({
+      var insert = await firebase.database().ref('fleet/' + this.state.fleetId + '/vehicle/' + this.state.vehicleId).set({
         vehicleId: this.state.vehicleId,
         vehicleNumber: this.state.vehicleNumber,
         vehicleHours: this.state.hours,

@@ -10,6 +10,7 @@ import FleetHome from './components/Fleet/FleetHome.js';
 import NewVehicle from './components/Fleet/Vehicle/New.js';
 import Settings from './components/User/Settings.js';
 import ChangePassword from './components/Auth/ChangePassword.js';
+import ForgotPassword from './components/Auth/ForgotPassword.js';
 
 export default () => {
   Navigation.registerComponent('Login', () => Login);
@@ -20,6 +21,7 @@ export default () => {
   Navigation.registerComponent('Settings', () => Settings);
   Navigation.registerComponent('Signout', () => Signout);
   Navigation.registerComponent('ChangePassword', () => ChangePassword);
+  Navigation.registerComponent('ForgotPassword', () => ForgotPassword);
 
   Navigation.startTabBasedApp({
       tabs: [
@@ -42,9 +44,9 @@ export default () => {
         label: 'Settings',
         screen: 'Settings',
         title: 'Settings',
-      }
+      },
       ],
-      // passProps: { resolvedFirebase }
+      // passProps: { setFleetId }
   });
 }
 

@@ -1,26 +1,24 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, TextInput, Button, AlertIOS } from 'react-native';
-// import firebase from '../Firebase/Firebase.js'
+import firebase from '../Firebase/Firebase.js'
 
 export default class SignUp extends Component {
   constructor(props) {
     super(props);
-    this.state = {email: '', password: '', passwordRepeat: '', errorMessage: '', name: ''};
-
-    this.firebase = this.props.firebase;
+    this.state = {email: '', password: '', passwordRepeat: '', errorMessage: '', firstName: '', lastName: '', phoneNumber: '', userId: ''};
 
     this.signup = this.signup.bind(this);
+    this.updateUserInfo = this.updateUserInfo.bind(this);
   }
 
   async tryToCreateUser() {
-      try {
-        var auth = await this.firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorCode);
         console.log(errorMessage);
-        var user = this.firebase.auth().currentUser;
 
         if(errorCode === 'auth/email-already-in-use') {
           AlertIOS.alert(
@@ -44,6 +42,7 @@ export default class SignUp extends Component {
             ],
           );
         } 
+        var user = firebase.auth().currentUser;
         if(user) {
           // Get current user info
 
@@ -54,24 +53,49 @@ export default class SignUp extends Component {
           //   console.log('Error sending email');
           // });
 
-          console.log('Here');
-
-          user.updateProfile({
-            displayName: this.state.name
-          }).then(function() {
-            // Update successful.
-            console.log('Name Added');
-          }, function(error) {
-            // An error happened.
-            console.log('Error Adding Name');
-          });
-
         }
       });
 
     } catch (e) {
       console.log(e);
     }
+    
+    var user = firebase.auth().currentUser;
+
+    console.log('LOOK HERE' + user.uid);
+
+    this.setState({
+      userId: user.uid,
+    });    
+
+    this.updateUserInfo();
+  }
+
+  async updateUserInfo() {
+    console.log('Updating user info');
+    console.log(this.state.userId);
+
+    try {
+      var insert = await firebase.database().ref('users/' + this.state.userId).set({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        fleetId: 16970,
+        phoneNumber: this.state.phoneNumber,
+        // createdTimestamp: new Date()
+      }).catch(function(error) {
+        eCode = error.code;
+        eMesasge = error.message;
+
+        console.log(eMessage);
+        console.log(eCode);
+      });
+
+      console.log('INSERT' + insert);
+    } catch (e) {
+      console.log('INSERT ERROR' + e)
+    }
+
+    console.log('Finished Updating User Info');
   }
 
   signup() {
@@ -101,11 +125,29 @@ export default class SignUp extends Component {
         <View>
           <TextInput
             style={styles.input}
-            placeholder="Name"
-            onChangeText={(name) => this.setState({name})}
+            placeholder="First Name"
+            onChangeText={(firstName) => this.setState({firstName})}
             autoCapitalize="none"
           />
         </View>
+
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            onChangeText={(lastName) => this.setState({lastName})}
+            autoCapitalize="none"
+          />
+        </View>     
+        
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            onChangeText={(phoneNumber) => this.setState({phoneNumber})}
+            autoCapitalize="none"
+          />
+        </View>           
 
         <View>
           <TextInput
@@ -163,6 +205,3 @@ const styles = StyleSheet.create({
       backgroundColor: '#49bcbc',
     }
 });
-
-
-AppRegistry.registerComponent('SignUp', () => SignUp);

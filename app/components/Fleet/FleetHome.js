@@ -17,6 +17,8 @@ export default class FleetHome extends Component {
     this.getUserFleetInfo = this.getUserFleetInfo.bind(this);
 
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
+    this.getUser();
   }
 
   onNavigatorEvent(event) {
@@ -28,11 +30,10 @@ export default class FleetHome extends Component {
   async getUser() {
     console.log('Get User Function');
     isUser = false;
-    await firebase.auth().onAuthStateChanged(function(user) {
+    await firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         console.log('isUser');
-        isUser = true;
-        loggedInUser = user;
+        this.getUserFleetInfo(user);
       } else {
         console.log('No user');
         console.log('SHOW LOGIN');
@@ -45,12 +46,6 @@ export default class FleetHome extends Component {
         });
       }
     });
-
-    console.log(isUser);
-
-    if(isUser === true) {
-      this.getUserFleetInfo(loggedInUser);
-    }
   }
 
   async getUserFleetInfo(user) {
@@ -60,8 +55,8 @@ export default class FleetHome extends Component {
     var data = null;
     var snapshotResponse;
 
-    await vehicleRef.once('value', function(snapshot) {
-      snapshot.forEach(function(childSnapshot) {
+    await vehicleRef.once('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
         console.log(childSnapshot.val());
         var childKey = childSnapshot.key;
         console.log(childKey);
@@ -71,16 +66,17 @@ export default class FleetHome extends Component {
         var vehicleNumber = childSnapshot.val().vehicleNumber;
 
         snapshotResponse = childSnapshot.val();
+
+        this.setState({
+          data: vehicleHours,
+          loadingMessage: ''
+        });
         
       });
     });
 
     console.log('before');
     console.log(snapshotResponse);
-    this.setState({
-      data: snapshotResponse,
-      loadingMessage: ''
-    });
 
     console.log('after');
     console.log(this.state.data);

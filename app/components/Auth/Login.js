@@ -18,6 +18,7 @@ export default class Login extends Component {
     this.handleSignUpButton = this.handleSignUpButton.bind(this);
     this.handleSuccessfulLogin = this.handleSuccessfulLogin.bind(this);
     this.hideTabBar = this.hideTabBar.bind(this);
+    this.handleForgotPassword = this.handleForgotPassword.bind(this);
   }
 
   getSignedInUser(props) {
@@ -94,6 +95,17 @@ export default class Login extends Component {
     this.tryToLoginUser();
   }
 
+  handleForgotPassword() {
+    this.props.navigator.push({
+      screen: 'ForgotPassword', // unique ID registered with Navigation.registerScreen
+      title: 'ForgotPassword', // navigation bar title of the pushed screen (optional)
+      passProps: {}, // Object that will be passed as props to the pushed screen (optional)
+      animated: true, // does the push have transition animation or does it happen immediately (optional)
+      animationType: 'slide-horizontal', // 'fade' (for both) / 'slide-horizontal' (for android) does the push have different transition animation (optional)
+      backButtonTitle: 'Login', // override the back button title (optional)
+    });
+  }
+
   render() {
     return(
       <View style={styles.signUpMain}>
@@ -131,7 +143,13 @@ export default class Login extends Component {
           <Button onPress={this.handleSignUpButton} textStyle={{fontSize: 18}} title="Register">
             Register
           </Button>
-        </View>   
+        </View>  
+        
+        <View style={styles.signUpButton}>
+          <Button onPress={this.handleForgotPassword} textStyle={{fontSize: 18}} title="Forgot Password">
+            Forgot Password
+          </Button>
+        </View>            
       </View>
     );
   }
