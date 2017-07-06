@@ -8,6 +8,7 @@ import Signout from './components/Auth/SignOut.js';
 import NewFleet from './components/Fleet/New.js';
 import FleetHome from './components/Fleet/FleetHome.js';
 import NewVehicle from './components/Fleet/Vehicle/New.js';
+import ShowVehicle from './components/Fleet/Vehicle/Show.js';
 import Settings from './components/User/Settings.js';
 import ChangePassword from './components/Auth/ChangePassword.js';
 import ForgotPassword from './components/Auth/ForgotPassword.js';
@@ -17,6 +18,7 @@ export default () => {
   Navigation.registerComponent('Signup', () => Signup);
   Navigation.registerComponent('NewFleet', () => NewFleet);
   Navigation.registerComponent('NewVehicle', () => NewVehicle);
+  Navigation.registerComponent('ShowVehicle', () => ShowVehicle);
   Navigation.registerComponent('FleetHome', () => FleetHome);
   Navigation.registerComponent('Settings', () => Settings);
   Navigation.registerComponent('Signout', () => Signout);
