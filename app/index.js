@@ -14,6 +14,7 @@ import ChangePassword from './components/Auth/ChangePassword.js';
 import ForgotPassword from './components/Auth/ForgotPassword.js';
 
 export default () => {
+
   Navigation.registerComponent('Login', () => Login);
   Navigation.registerComponent('Signup', () => Signup);
   Navigation.registerComponent('NewFleet', () => NewFleet);
@@ -26,29 +27,35 @@ export default () => {
   Navigation.registerComponent('ForgotPassword', () => ForgotPassword);
 
   Navigation.startTabBasedApp({
-      tabs: [
-      {
-        label: 'Fleet Home',
-        screen: 'FleetHome',
-        title: 'Fleet Home',
-      },
-      {
-        label: 'New Fleet',
-        screen: 'NewFleet',
-        title: 'New Fleet',
-      },
-      {
-        label: 'New Vehicle',
-        screen: 'NewVehicle',
-        title: 'New Vehicle',
-      },
-      {
-        label: 'Settings',
-        screen: 'Settings',
-        title: 'Settings',
-      },
-      ],
-      // passProps: { setFleetId }
+    tabs: [
+    {
+      label: 'Fleet Home',
+      screen: 'FleetHome',
+      title: 'Fleet Home',
+    },
+    {
+      label: 'New Fleet',
+      screen: 'NewFleet',
+      title: 'New Fleet',
+    },
+    {
+      label: 'New Vehicle',
+      screen: 'NewVehicle',
+      title: 'New Vehicle',
+    },
+    {
+      label: 'Settings',
+      screen: 'Settings',
+      title: 'Settings',
+    },
+    ],
+    // passProps: { setFleetId }
+    drawer: { // optional, add this if you want a side menu drawer in your app
+      left: { // optional, define if you want a drawer from the left
+        screen: 'Settings', // unique ID registered with Navigation.registerScreen
+        passProps: {fleetId: this.userFleetId} // simple serializable object that will pass as props to all top screens (optional)
+      }
+    },
   });
 }
 

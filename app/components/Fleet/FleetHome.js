@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { AppRegistry, ScrollView, TouchableOpacity, Text, View, StyleSheet, TextInput, Button, Navigator } from 'react-native';
-import firebase from '../Firebase/Firebase.js'
+import { AppRegistry, ScrollView, TouchableOpacity, Text, View, StyleSheet, TextInput, Button, Navigator, RefreshControl } from 'react-native';
+import firebase from '../Firebase/Firebase.js';
+import getFleetId from '../Firebase/UserFleetId.js'; 
 
 export default class FleetHome extends Component {
 
@@ -10,7 +11,12 @@ export default class FleetHome extends Component {
     this.state = {
       loadingMessage: 'Loading...',
       vehicleArr: [],
+      refreshing: false,
     }
+
+   
+    // getFleetId().then((id) => console.log(`fleetid: ${id}`)).catch((err) => console.log('user is not logged in'));
+    console.log('LOOK HERE' + getFleetId());
 
     // Bind funcitons
     this.getUser = this.getUser.bind(this);
@@ -20,13 +26,35 @@ export default class FleetHome extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     this.getUser();
+
+    this.props.navigator.setButtons({
+      leftButtons: [
+        {
+          title: 'Edit',
+          id: 'showSide',
+        }
+      ]
+    });
   }
 
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.getUser().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
 
   onNavigatorEvent(event) {
     if (event.id === 'bottomTabSelected') {
       this.getUser();
       this.state.vehicleArr = [];
+    }
+    if (event.id === 'showSide') {
+      this.props.navigator.toggleDrawer({
+        side: 'left',
+        animated: true,
+        to: 'open',
+      })
     }
   }
 
@@ -53,11 +81,10 @@ export default class FleetHome extends Component {
 
   async getUserFleetInfo(user) {
     console.log(user);
-    var fleetId = '16970';
     var vehicleRef = firebase.database().ref('fleet/' + fleetId + '/vehicle');
     var data = null;
     var snapshotResponse;
-
+    this.state.vehicleArr = [];
     await vehicleRef.once('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         var childKey = childSnapshot.key;
@@ -65,6 +92,8 @@ export default class FleetHome extends Component {
         var createdBy = childSnapshot.val().createdBy;
         var vehicleMileage = childSnapshot.val().vehicleMileage;
         var vehicleNumber = childSnapshot.val().vehicleNumber;
+        var vehicleName = childSnapshot.val().vehicleName;
+        var vehiclePlate = childSnapshot.val().vehiclePlate;
 
         this.state.vehicleArr.push({
           key: childKey,
@@ -72,6 +101,8 @@ export default class FleetHome extends Component {
           createdBy: createdBy,
           mileage: vehicleMileage,
           number: vehicleNumber,
+          name: vehicleName,
+          plate: vehiclePlate,
         });
 
         this.setState({
@@ -82,40 +113,38 @@ export default class FleetHome extends Component {
     });
   }
 
-  handleVehicleClick(vehicleKey) {
-    console.log('Vehicle Clicked');
+  handleVehicleClick(vehicleKey, vehicleName) {
 
-    // this.props.navigator.showModal({
-    //   screen: "ShowVehicle", // unique ID registered with Navigation.registerScreen
-    //   title: "Vehicle", // title of the screen as appears in the nav bar (optional)
-    //   passProps: {vehicleKey}, // simple serializable object that will pass as props to the modal (optional)
-    //   navigatorStyle: {}, // override the navigator style for the screen, see "Styling the navigator" below (optional)
-    //   navigatorButtons: {}, // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
-    //   animationType: 'slide-up' // 'none' / 'slide-up' , appear animation for the modal (optional, default 'slide-up')
-    // }); 
+    this.props.navigator.showModal({
+      screen: "ShowVehicle", // unique ID registered with Navigation.registerScreen
+      title: vehicleName, // title of the screen as appears in the nav bar (optional)
+      passProps: {vehicleKey: vehicleKey, fleetId: this.state.fleetId}, // simple serializable object that will pass as props to the modal (optional)
+    });
   }
 
   render() {
     return(
       <View style={styles.newFleetMain}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }
+        >
           {
             this.state.vehicleArr.map((vehicle) => {
               return(
-                <View style={styles.vehicleContainer} key={vehicle.key} onpress={() => this.handleVehicleClick(vehicle.key)}>
-                  <TouchableOpacity>
-                    <Text>
-                      Hours: {vehicle.hours}
+                <View style={styles.vehicleContainer} key={vehicle.key}>
+                  <TouchableOpacity onPress={() => this.handleVehicleClick(vehicle.key, vehicle.name)}>
+                    <Text style={styles.vehicleName}>
+                      {vehicle.name}
                     </Text>
                     <Text>
-                      Created By: {vehicle.createdBy}
+                      License Plate: {vehicle.plate}
                     </Text>
-                    <Text>
-                      Mileage: {vehicle.mileage}
-                    </Text>
-                    <Text>
-                      Number: {vehicle.number}
-                    </Text>                    
+                 
                   </TouchableOpacity>
                 </View>
               )
@@ -140,10 +169,13 @@ const styles = StyleSheet.create({
       backgroundColor: '#49bcbc',
     },
     vehicleContainer: {
-      backgroundColor: 'red',
-      marginTop: 10,
-      padding: 2,
-      paddingLeft: 12,
-      paddingRight: 12,
+      backgroundColor: '#F6F5F8',
+      padding: 12,
+      borderBottomColor: 'black',
+      borderBottomWidth: 1.5
+    },
+    vehicleName: {
+      fontSize: 15,
+      fontWeight: 'bold'
     }
 });
